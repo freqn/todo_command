@@ -1,14 +1,27 @@
 class Task
-  attr_accessor :status, :count
+  @@all_tasks = []
 
-  def initialize(description, status='open', count=0)
+  def Task.all 
+    @@all_tasks
+  end
+
+  def Task.clear
+    @@all_tasks = []
+  end
+
+  def Task.amount
+    @@all_tasks.count
+  end
+
+  def initialize(description)
     @description = description
-    @status = status
-    @count = count
   end
 
   def description
     @description
   end
 
+  def save
+    @@all_tasks << self
+  end
 end

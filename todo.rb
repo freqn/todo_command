@@ -1,18 +1,17 @@
 require './lib/task'
 
-@list = []
-
 def main_menu
-  puts "Type 'a' to add a task, 'l' to list tasks or 'c' to mark a task as complete."
+  puts "Type 'a' to add a task, 'l' to list tasks or 'c' clear your tasks."
   puts "Press 'x' to exit."
   main_choice = gets.chomp
+  spacer
 
-  if  main_choice == 'a'
+  if main_choice == 'a'
     add_task
   elsif main_choice == 'l'
     list_tasks
   elsif main_choice == 'c'
-    complete_task
+    clear_tasks
   elsif main_choice == 'x'
     puts "Goodbye!"
   else
@@ -23,33 +22,41 @@ end
 def add_task
   puts "Enter a new description"
   user_description = gets.chomp
-  @list << Task.new(user_description)
+  Task.new(user_description).save
+  @list = Task.all
   puts "Task successfully created"
-  puts "\n\n"
+  spacer
   main_menu
 end
 
 def list_tasks
-  puts "These are your tasks: "
-  count = 0
-  @list.each do |task|
-    count +=1
-    puts "#{count}) <@state> #{task.description}"
+  if Task.amount >= 1
+    puts "These are your tasks: "
+    @list.each do |task|
+      puts task.description
+    end
+  else
+    puts "You have no tasks"
   end
-  puts "\n\n"
-  # export
+  spacer
   main_menu
 end
 
-def complete_task
-  puts "Pick a task to delete"
-  
+def clear_tasks
+  @list.clear
+  puts "Your tasks have been cleared"
+  main_menu
 end
 
 def task_status(state)
   @state = state
 end
 
+def spacer
+  puts "\n"
+end
+
+=begin
 # Help found at http://stackoverflow.com/questions/18900474/add-each-array-element-to-the-lines-of-a-file-in-ruby
 def export
   file_name = 'todo.txt'
@@ -61,6 +68,7 @@ def export
     end
   end
 end
+=end
 
 main_menu
 
