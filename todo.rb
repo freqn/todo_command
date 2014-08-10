@@ -1,7 +1,7 @@
 require './lib/task'
 
 def main_menu
-  puts "Type 'a' to add a task, 'l' to list tasks or 'c' clear your tasks."
+  puts "Type 'a' to add a task, 'l' to list your tasks or 'r' to reset your tasks."
   puts "Press 'x' to exit."
   main_choice = gets.chomp
   spacer
@@ -10,18 +10,21 @@ def main_menu
     add_task
   elsif main_choice == 'l'
     list_tasks
-  elsif main_choice == 'c'
-    clear_tasks
+  elsif main_choice == 'r'
+    reset_tasks
   elsif main_choice == 'x'
     puts "Goodbye!"
+    spacer
   else
     puts "Invalid selection. Try again"
+    spacer
+    main_menu
   end
 end
 
 def add_task
   puts "Enter a new description"
-  user_description = gets.chomp
+  user_description = gets.chomp.capitalize
   Task.new(user_description).save
   @list = Task.all
   puts "Task successfully created"
@@ -31,21 +34,40 @@ end
 
 def list_tasks
   if Task.amount >= 1
-    puts "These are your tasks: "
+    puts "These are your open tasks: "
+    count = 0
     @list.each do |task|
-      puts task.description
+      count += 1
+      puts "#{count}) #{task.description}"
     end
+    puts "Would you like to close a task? Y or N"
+    delete = gets.chomp.downcase
+    delete == 'y' ? close_task : main_menu
   else
-    puts "You have no tasks"
+    puts "You have no open tasks"
+    spacer
+    main_menu
   end
-  spacer
-  main_menu
 end
 
-def clear_tasks
-  @list.clear
-  puts "Your tasks have been cleared"
-  main_menu
+def close_task
+  spacer
+  puts "Enter the task number"
+  del_option = gets.chomp.to_i
+  Task.delete(del_option - 1)
+  spacer
+  list_tasks
+end
+
+def reset_tasks
+  if Task.amount >= 1
+    @list.clear
+    puts "Your tasks have been cleared"
+  else
+    puts "You have no tasks"
+    spacer
+    main_menu
+  end
 end
 
 def task_status(state)

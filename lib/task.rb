@@ -9,6 +9,10 @@ class Task
     @@all_tasks = []
   end
 
+  def Task.delete(num)
+    @@all_tasks.delete_at(num)
+  end
+
   def Task.amount
     @@all_tasks.count
   end
